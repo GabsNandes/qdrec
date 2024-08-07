@@ -1,5 +1,5 @@
+from sqlalchemy import Column, Date, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Integer, String, Date
 from sqlalchemy.types import PickleType
 
 Base = declarative_base()

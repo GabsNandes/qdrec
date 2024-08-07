@@ -1,13 +1,13 @@
-import string
-from qdrec.api.querido_diario.db.engine import DBSession
-from qdrec.api.querido_diario.db.models import DBExcerpts
 import difflib
-
+import string
+from datetime import date
 from typing import Optional
 
 from pydantic import BaseModel
 
-from datetime import date
+from qdrec.api.querido_diario.db.engine import DBSession
+from qdrec.api.querido_diario.db.models import DBExcerpts
+
 
 class InvalidDateError(Exception):
     "Invalid date format. Please use YYYY-MM-DD"

@@ -1,8 +1,11 @@
 from sqlalchemy import *
+from sqlalchemy.dialects.postgresql import TSVECTOR
+
 #from sqlalchemy_orm import Model, Database
 from sqlalchemy.orm import relationship
-from database.connection import Base
-from sqlalchemy.dialects.postgresql import TSVECTOR
+
+from qdrec.database.connection import Base
+
 
 def object_as_dict(obj):
     return {c.key: getattr(obj, c.key)

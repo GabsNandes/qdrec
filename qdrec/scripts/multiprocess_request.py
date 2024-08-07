@@ -1,11 +1,11 @@
-from multiprocessing import cpu_count, Pool
+import sys
+from multiprocessing import Pool, cpu_count
+
 import numpy as np
 import pandas as pd
+
 from qdrec.scripts.google_scrapper import fix_spelling_in_answer
 from qdrec.scripts.preprocess_qd import pipeline_multiprocess
-
-import sys
-
 
 
 def multiprocess_request(df:pd.DataFrame(), func, n_jobs:int=cpu_count()) -> pd.DataFrame():

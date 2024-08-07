@@ -1,11 +1,15 @@
 #preprocessing.py
-import pandas as pd
-import re
+import datetime
+
 #from unidecode import unidecode
 import logging
-import datetime
+import re
 from copy import deepcopy
+
+import pandas as pd
+
 from qdrec.scripts.google_scrapper import fix_spelling_in_answer
+
 
 def remove_dash_n(text):
     return text.replace('/n', ' ')
@@ -309,8 +313,8 @@ def clean(texts:pd.Series) -> pd.Series:
     return texts.apply(lambda txt: clean_text(txt))
 
 
-from sqlalchemy import create_engine
-from sqlalchemy import text
+from sqlalchemy import create_engine, text
+
 
 def clean_and_insert(df_splitted:pd.DataFrame()) -> None: 
     engine = create_engine(f"sqlite:///queridodiario.db")

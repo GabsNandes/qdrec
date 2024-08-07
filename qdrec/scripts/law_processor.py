@@ -1,17 +1,17 @@
+import json
 import re
+import time
 from io import StringIO
-from fastapi import Depends
-import pandas as pd
 
+import pandas as pd
 import requests
 from bs4 import BeautifulSoup
-import json
-import time
+from fastapi import Depends
 
 from qdrec.api.crud.crud import create_excerpt_metadata, create_named_entity
 from qdrec.api.model.schemas import ExcerptMetadataCreate, NamedEntityCreate
-
 from qdrec.database.connection import SessionLocal
+
 
 def get_db():
     db = SessionLocal()

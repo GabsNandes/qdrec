@@ -1,22 +1,21 @@
 #@title Setup common imports and functions
-import numpy as np
-import os
-import pandas as pd 
 import json
-import nltk
 import os
 import pprint
 import random
-import simpleneighbors
-import urllib
 import re
-import seaborn as sns
+import urllib
 from copy import deepcopy
+from itertools import islice
 
+import nltk
+import numpy as np
+import pandas as pd
+import seaborn as sns
+import simpleneighbors
 import tensorflow.compat.v2 as tf
 import tensorflow_hub as hub
 from tensorflow_text import SentencepieceTokenizer
-from itertools import islice
 
 nltk.download('punkt')
 

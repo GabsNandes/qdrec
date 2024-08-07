@@ -2,6 +2,7 @@ from sqlalchemy.orm import Session
 
 from qdrec.api.model import excerpt_models, schemas
 
+
 def get_excerpt_metadata_by_id(db: Session, excerpt_id: str):
     return db.query(excerpt_models.ExcerptMetadata).filter(excerpt_models.ExcerptMetadata.excerpt_id == excerpt_id).first()
 

@@ -1,13 +1,12 @@
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
-from sqlalchemy.orm import Session
-from api.model import schemas
-
-from database.connection import SessionLocal
-
 from api.crud import crud
+from api.model import schemas
+from database.connection import SessionLocal
+from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 from scripts.append_regex import execute_csv_regex
 from scripts.bert_ner_processor import execute_csv
 from scripts.law_processor import execute_csv_law
+from sqlalchemy.orm import Session
+
 
 def get_db():
     db = SessionLocal()
