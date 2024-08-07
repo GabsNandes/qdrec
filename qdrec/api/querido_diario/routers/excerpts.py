@@ -1,11 +1,12 @@
-from api.crud import crud
-from api.model import schemas
-from database.connection import SessionLocal
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
-from scripts.append_regex import execute_csv_regex
-from scripts.bert_ner_processor import execute_csv
-from scripts.law_processor import execute_csv_law
 from sqlalchemy.orm import Session
+
+from qdrec.api.crud import crud
+from qdrec.api.model import schemas
+from qdrec.database.connection import SessionLocal
+from qdrec.scripts.append_regex import execute_csv_regex
+from qdrec.scripts.bert_ner_processor import execute_csv
+from qdrec.scripts.law_processor import execute_csv_law
 
 
 def get_db():
