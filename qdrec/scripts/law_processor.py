@@ -8,10 +8,10 @@ from bs4 import BeautifulSoup
 import json
 import time
 
-from api.crud.crud import create_excerpt_metadata, create_named_entity
-from api.model.schemas import ExcerptMetadataCreate, NamedEntityCreate
+from qdrec.api.crud.crud import create_excerpt_metadata, create_named_entity
+from qdrec.api.model.schemas import ExcerptMetadataCreate, NamedEntityCreate
 
-from database.connection import SessionLocal
+from qdrec.database.connection import SessionLocal
 
 def get_db():
     db = SessionLocal()

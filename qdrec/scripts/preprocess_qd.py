@@ -5,7 +5,7 @@ import re
 import logging
 import datetime
 from copy import deepcopy
-from google_scrapper import fix_spelling_in_answer
+from qdrec.scripts.google_scrapper import fix_spelling_in_answer
 
 def remove_dash_n(text):
     return text.replace('/n', ' ')

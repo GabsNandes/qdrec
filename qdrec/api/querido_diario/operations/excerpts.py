@@ -1,6 +1,6 @@
 import string
-from querido_diario.db.engine import DBSession
-from querido_diario.db.models import DBExcerpts
+from qdrec.api.querido_diario.db.engine import DBSession
+from qdrec.api.querido_diario.db.models import DBExcerpts
 import difflib
 
 from typing import Optional

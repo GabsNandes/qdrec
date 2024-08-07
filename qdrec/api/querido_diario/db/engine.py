@@ -2,7 +2,7 @@ from sqlalchemy.engine.base import Engine
 from sqlalchemy.engine import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from querido_diario.db.models import Base
+from qdrec.api.querido_diario.db.models import Base
 
 engine: Engine = None
 DBSession = sessionmaker()

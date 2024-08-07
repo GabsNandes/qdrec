@@ -1,8 +1,8 @@
 from multiprocessing import cpu_count, Pool
 import numpy as np
 import pandas as pd
-from google_scrapper import fix_spelling_in_answer
-from preprocess_qd import pipeline_multiprocess
+from qdrec.scripts.google_scrapper import fix_spelling_in_answer
+from qdrec.scripts.preprocess_qd import pipeline_multiprocess
 
 import sys
 
