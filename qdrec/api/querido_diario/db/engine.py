@@ -6,6 +6,8 @@ from qdrec.api.querido_diario.db.models import Base
 
 engine: Engine = None
 DBSession = sessionmaker()
+
+
 def init_db(filepath: str):
     """Create database tables for our data models."""
     engine = create_engine(filepath)

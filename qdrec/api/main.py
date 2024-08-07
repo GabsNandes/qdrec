@@ -8,10 +8,10 @@ from qdrec.database.connection import SessionLocal, engine
 
 app = FastAPI()
 
+
 @app.get("/")
 def read_root():
     return "The server is running"
-
 
 
 app.include_router(excerpts.router)

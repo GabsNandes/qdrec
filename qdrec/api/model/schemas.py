@@ -11,8 +11,10 @@ class ExcerptMetadataBase(BaseModel):
     tema: str
     data: datetime.datetime
 
+
 class ExcerptMetadataCreate(ExcerptMetadataBase):
     pass
+
 
 class ExcerptMetadata(ExcerptMetadataBase):
     excerpt_id: str
@@ -20,6 +22,7 @@ class ExcerptMetadata(ExcerptMetadataBase):
 
     class Config:
         orm_mode = True
+
 
 ##  NAMED ENTITY  ##
 class NamedEntityBase(BaseModel):
@@ -29,8 +32,10 @@ class NamedEntityBase(BaseModel):
     start_offset: int
     end_offset: int
 
+
 class NamedEntityCreate(NamedEntityBase):
     pass
+
 
 class NamedEntity(NamedEntityBase):
     excerpt_id: str
@@ -39,13 +44,16 @@ class NamedEntity(NamedEntityBase):
     class Config:
         orm_mode = True
 
+
 ##  VECTORS  ##
 class VectorsBase(BaseModel):
     excerpt_id: str
     vectorized_excerpt: str
 
+
 class VectorsCreate(VectorsBase):
     pass
+
 
 class Vectors(VectorsBase):
     excerpt_id: str
