@@ -23,8 +23,6 @@ with open(file_path, "rb") as file:
         processed_text = extracted_text.lower()
 
         # Find position of the word 'nomear' in the text
-        # index = processed_text.find("nomear")
-
         designations = [m.start() for m in re.finditer("nomear", processed_text)]
 
         for start_index in designations:
@@ -36,10 +34,28 @@ with open(file_path, "rb") as file:
         dismissals = [m.start() for m in re.finditer("exonerar", processed_text)]
 
         for start_index in dismissals:
+            print("----")
+
             # Find text from the word 'exonerar' to the next full stop
             end_index = extracted_text.find(".", start_index)
-            designation_act = extracted_text[start_index : end_index + 1]
-            print(designation_act)
+            dismissal_act = extracted_text[start_index : end_index + 1]
+            print(dismissal_act)
+
+            # Find the first ocurrence of an uppercase letter after the word 'exonerar', up to the next comma
+            # This is the name of the person being dismissed
+            rest = dismissal_act[
+                dismissal_act.lower().find("exonerar") + len("exonerar") :
+            ].strip()
+            print(rest)
+            name_start_index = re.search("[A-Z]", rest)
+            if name_start_index is None:
+                continue
+            print(name_start_index)
+            name_start_index = name_start_index.start()
+            name_end_index = rest.find(",", name_start_index)
+            dismissed_name = rest[name_start_index:name_end_index]
+            dismissed_name = dismissed_name.strip().replace("\n", "").replace(" -", "")
+            print("NAME:", dismissed_name)
 
         all_text = all_text + extracted_text
 
