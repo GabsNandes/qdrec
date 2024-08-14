@@ -14,11 +14,12 @@ def find_act(word: str, full_text: str):
     act_indexes = [m.start() for m in re.finditer(word, full_text.lower())]
 
     for start_index in act_indexes:
-        print("----")
+        print("\n----")
 
         # Find text from the word to the next full stop
         end_index = extracted_text.find(".", start_index)
         act = extracted_text[start_index : end_index + 1]
+        print("Full act text:")
         print(act)
 
         # Find the first ocurrence of an uppercase letter after the word, up to the next comma
@@ -33,7 +34,9 @@ def find_act(word: str, full_text: str):
         name_end_index = rest.find(",", name_start_index)
         name = rest[name_start_index:name_end_index]
         name = name.strip().replace("\n", "").replace(" -", "")
-        print("NAME:", name)
+        print("\nAffected name:\n" + name)
+
+        print("----\n")
 
 
 all_text = ""
@@ -43,8 +46,7 @@ with open(file_path, "rb") as file:
 
     for page_number, page in enumerate(pdf.pages):
         extracted_text = page.extract_text()
-        print(page_number, len(extracted_text))
-        print("----")
+        print(f"Reading page {page_number+1}, length: {len(extracted_text)}")
 
         find_act("nomear", extracted_text)
         find_act("exonerar", extracted_text)
@@ -56,4 +58,4 @@ with open("all_text.txt", "w", encoding="utf-8") as file:
     file.write(all_text)
 
 
-print("fim")
+print("Finished!")
