@@ -19,6 +19,7 @@ def find_act(word: str, full_text: str):
         # Find text from the word to the next full stop
         end_index = extracted_text.find(".", start_index)
         act = extracted_text[start_index : end_index + 1]
+        act = act.replace("\n", " ").replace("  ", " ")
         print("Full act text:")
         print(act)
 
@@ -33,7 +34,7 @@ def find_act(word: str, full_text: str):
         name_start_index = name_start_index.start()
         name_end_index = rest.find(",", name_start_index)
         name = rest[name_start_index:name_end_index]
-        name = name.strip().replace("\n", "").replace(" -", "")
+        name = name.strip().replace(" - ", "")
         print("\nAffected name:\n" + name)
 
         print("----\n")
