@@ -3,11 +3,8 @@ import re
 
 import pypdf
 
-script_path = os.path.dirname(os.path.realpath(__file__))
-
-# file_path = os.path.join(script_path, "nosso.pdf")
-
-file_path = os.path.join("samples", "DiarioOficial_NovaIguaçu_0518-24.pdf")
+INPUT_PATH = "samples"
+EXTRACTION_PATH = "extracted"
 
 
 def find_act(word: str, full_text: str):
@@ -17,8 +14,8 @@ def find_act(word: str, full_text: str):
         print("\n----")
 
         # Find text from the word to the next full stop
-        end_index = extracted_text.find(".", start_index)
-        act = extracted_text[start_index : end_index + 1]
+        end_index = full_text.find(".", start_index)
+        act = full_text[start_index : end_index + 1]
         act = act.replace("\n", " ").replace("  ", " ")
         print("Full act text:")
         print(act)
@@ -40,23 +37,40 @@ def find_act(word: str, full_text: str):
         print("----\n")
 
 
-all_text = ""
+def find_acts_in_file(file_path: str):
+    print(f"Reading document {file_path}")
 
-with open(file_path, "rb") as file:
-    pdf = pypdf.PdfReader(file)
+    all_text = ""
+    with open(file_path, "rb") as f:
+        pdf = pypdf.PdfReader(f)
 
-    for page_number, page in enumerate(pdf.pages):
-        extracted_text = page.extract_text()
-        print(f"Reading page {page_number+1}, length: {len(extracted_text)}")
+        for page_number, page in enumerate(pdf.pages):
+            extracted_text = page.extract_text()
+            print(f"Reading page {page_number+1}, length: {len(extracted_text)}")
 
-        find_act("nomear", extracted_text)
-        find_act("exonerar", extracted_text)
+            find_act("nomear", extracted_text)
+            find_act("exonerar", extracted_text)
 
-        all_text = all_text + extracted_text
+            all_text = all_text + extracted_text
+
+    # Write extracted text to a .txt file with the same name as the document
+    extract_filename = f"{os.path.splitext(os.path.basename(file_path))[0]}.txt"
+    extract_path = os.path.join(EXTRACTION_PATH, extract_filename)
+    with open(extract_path, "w", encoding="utf-8") as f:
+        f.write(all_text)
 
 
-with open("all_text.txt", "w", encoding="utf-8") as file:
-    file.write(all_text)
+def main():
 
+    if not os.path.exists(EXTRACTION_PATH):
+        os.mkdir(EXTRACTION_PATH)
+
+    for file in os.listdir(INPUT_PATH):
+        file_path = os.path.join(INPUT_PATH, file)
+        find_acts_in_file(file_path)
+
+
+if __name__ == "__main__":
+    main()
 
 print("Finished!")
