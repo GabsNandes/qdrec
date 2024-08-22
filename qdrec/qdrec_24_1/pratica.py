@@ -31,10 +31,21 @@ def find_act(word: str, full_text: str):
         name_start_index = name_start_index.start()
         name_end_index = rest.find(",", name_start_index)
         name = rest[name_start_index:name_end_index]
-        name = name.strip().replace(" - ", "")
+
+        # Remove any - surrounded by any number of spaces in each side
+        # TODO: implement
+        # re.sub("[\s-\s]")
+
         print("\nAffected name:\n" + name)
 
         print("----\n")
+
+
+def remove_header(last_word: str, full_text: str):
+    # Remove text from the start of full_text up to the first occurence of last_word
+
+    # TODO: implement method
+    return full_text
 
 
 def find_acts_in_file(file_path: str):
@@ -44,14 +55,19 @@ def find_acts_in_file(file_path: str):
     with open(file_path, "rb") as f:
         pdf = pypdf.PdfReader(f)
 
+        city_name = os.path.basename(file_path).split(" - ")[0]
+        print(city_name)
+
         for page_number, page in enumerate(pdf.pages):
             extracted_text = page.extract_text()
             print(f"Reading page {page_number+1}, length: {len(extracted_text)}")
 
+            extracted_text = remove_header(city_name, extracted_text)
+
             find_act("nomear", extracted_text)
             find_act("exonerar", extracted_text)
 
-            all_text = all_text + extracted_text
+            all_text = all_text + "\n\n" + extracted_text
 
     # Write extracted text to a .txt file with the same name as the document
     extract_filename = f"{os.path.splitext(os.path.basename(file_path))[0]}.txt"
