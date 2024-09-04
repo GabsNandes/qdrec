@@ -48,7 +48,7 @@ def find_acts_in_text(word: str, full_text: str, page_number: int) -> list[Act]:
         # This is the name of the person affected by the act!
         rest = act[act.lower().find(word) + len(word) :].strip()
 
-        pattern = r"[A-Z](?:(?!\b(?:da|de|do|das|dos|e)\b).)*?(?=,|\s[a-z])"
+        pattern = r"[A-Z\u00C0-\u00DC].*?(?=,|\s(?!da|de|do|das|dos|e)[a-z])"
 
         name = re.search(pattern, rest)
         if name:
