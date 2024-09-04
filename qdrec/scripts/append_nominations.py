@@ -69,16 +69,8 @@ def find_acts_in_text(word: str, full_text: str, page_number: int) -> list[Act]:
 
 def remove_header(last_word: str, full_text: str):
     # Remove text from the start of full_text up to the first occurence of last_word
-
-    print(last_word.lower())
-    # print(full_text.lower())
-    print(full_text.lower().find(last_word.lower()))
-
     start_index = full_text.lower().find(last_word.lower()) + len(last_word)
     full_text = full_text[start_index:]
-
-    print("Header removed:")
-    print(full_text[:100])
 
     return full_text
 
@@ -93,7 +85,6 @@ def find_acts_in_file(file_path: str, debug: bool = False) -> list[Act]:
         pdf = pypdf.PdfReader(f)
 
         city_name = os.path.basename(file_path).split(" - ")[0]
-        print(city_name)
 
         pages_text = []
 
