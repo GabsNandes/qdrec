@@ -1,5 +1,8 @@
+import csv
+import json
 import os
 import re
+from dataclasses import dataclass
 
 import pypdf
 
@@ -7,8 +10,20 @@ INPUT_PATH = "samples"
 EXTRACTION_PATH = "extracted"
 
 
-def find_act(word: str, full_text: str):
+@dataclass
+class Act:
+    full_text: str
+    name: str
+    page: int = 0
+
+    def to_dict(self):
+        return {"full_text": self.full_text, "name": self.name, "page": self.page}
+
+
+def find_acts_in_text(word: str, full_text: str, page_number: int) -> list[Act]:
     act_indexes = [m.start() for m in re.finditer(word, full_text.lower())]
+
+    acts: list[Act] = []
 
     for start_index in act_indexes:
         print("\n----")
@@ -40,21 +55,31 @@ def find_act(word: str, full_text: str):
             name = name.group(0)
             name = name.replace(",", "")
             name = name.strip()
+        else:
+            name = "?"
 
         print("\nAffected name:\n", name)
 
         print("----\n")
 
+        acts.append(Act(act, name, page_number))
+
+    return acts
+
 
 def remove_header(last_word: str, full_text: str):
     # Remove text from the start of full_text up to the first occurence of last_word
 
-    # TODO: implement method
+    start_index = full_text.lower().find(last_word.lower())
+    full_text = full_text[start_index:]
+
     return full_text
 
 
-def find_acts_in_file(file_path: str):
+def find_acts_in_file(file_path: str, debug: bool = False) -> list[Act]:
     print(f"Reading document {file_path}")
+
+    all_acts: list[Act] = []
 
     all_text = ""
     with open(file_path, "rb") as f:
@@ -69,29 +94,81 @@ def find_acts_in_file(file_path: str):
 
             extracted_text = remove_header(city_name, extracted_text)
 
-            find_act("nomear", extracted_text)
-            find_act("exonerar", extracted_text)
+            nomination_acts = find_acts_in_text(
+                "nomear", extracted_text, page_number + 1
+            )
+            all_acts.extend(nomination_acts)
+
+            dismissal_acts = find_acts_in_text(
+                "exonerar", extracted_text, page_number + 1
+            )
+            all_acts.extend(dismissal_acts)
 
             all_text = all_text + "\n\n" + extracted_text
 
     # Write extracted text to a .txt file with the same name as the document
-    extract_filename = f"{os.path.splitext(os.path.basename(file_path))[0]}.txt"
-    extract_path = os.path.join(EXTRACTION_PATH, extract_filename)
-    with open(extract_path, "w", encoding="utf-8") as f:
-        f.write(all_text)
+    if debug:
+        extract_filename = f"{os.path.splitext(os.path.basename(file_path))[0]}.txt"
+        extract_path = os.path.join(EXTRACTION_PATH, extract_filename)
+        with open(extract_path, "w", encoding="utf-8") as f:
+            f.write(all_text)
+
+    return all_acts
 
 
-def main():
+def process_samples(input_path: str, output_path: str, debug: bool = False):
+    output_data: dict[str, list[Act]] = {}
 
-    if not os.path.exists(EXTRACTION_PATH):
-        os.mkdir(EXTRACTION_PATH)
+    # Check if input refers to a directory or a file
+    if os.path.isdir(input_path):
+        for filename in os.listdir(input_path):
+            file_path = os.path.join(input_path, filename)
+            acts = find_acts_in_file(file_path, debug)
+            output_data[filename] = acts
+    else:
+        filename = os.path.basename(input_path)
+        acts = find_acts_in_file(input_path, debug)
+        output_data[filename] = acts
 
-    for file in os.listdir(INPUT_PATH):
-        file_path = os.path.join(INPUT_PATH, file)
-        find_acts_in_file(file_path)
+    output_type = os.path.splitext(output_path)[1]
+
+    # JSON file
+    if output_type == ".json":
+        with open(output_path, "w", encoding="utf-8") as f:
+            json.dump(
+                output_data,
+                f,
+                ensure_ascii=False,
+                indent=2,
+                default=lambda o: o.to_dict(),
+            )
+
+    # CSV file
+    elif output_type == ".csv":
+        with open(output_path, "w", encoding="utf-8") as f:
+            writer = csv.writer(f)
+            writer.writerow(["file_name", "full_text", "name", "page"])
+            for filename, acts in output_data.items():
+                for act in acts:
+                    writer.writerow([filename, act.full_text, act.name, act.page])
+
+    # Plain text file
+    else:
+        lines = []
+        for filename, acts in output_data.items():
+            lines.append("*" * 80 + "\n")
+            lines.append(f"File: {filename}\n")
+            lines.append("*" * 80 + "\n")
+            for act in acts:
+                lines.append(f"Page {act.page}\n\n")
+                lines.append(act.full_text + "\n\n")
+                lines.append(f"Affected name: {act.name}\n")
+                lines.append("-" * 80 + "\n")
+        with open(output_path, "w", encoding="utf-8") as f:
+            f.writelines(lines)
 
 
 if __name__ == "__main__":
-    main()
-
-print("Finished!")
+    if not os.path.exists(EXTRACTION_PATH):
+        os.mkdir(EXTRACTION_PATH)
+    process_samples(INPUT_PATH, EXTRACTION_PATH, debug=True)
