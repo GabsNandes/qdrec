@@ -13,30 +13,35 @@ def find_act(word: str, full_text: str):
     for start_index in act_indexes:
         print("\n----")
 
-        # Find text from the word to the next full stop
-        end_index = full_text.find(".", start_index)
+        # Find text from the word to the next full stop followed by a newline
+        end_index = full_text.find(".\n", start_index)
         act = full_text[start_index : end_index + 1]
-        act = act.replace("\n", " ").replace("  ", " ")
+        act = act.replace("\n", " ").replace("  ", " ").strip()
+
+        if not act:
+            continue
+
+        # Remove any - surrounded by at least one space in each side
+        act = re.sub(r"\s+-\s+", "", act)
+
         print("Full act text:")
         print(act)
 
-        # Find the first ocurrence of an uppercase letter after the word, up to the next comma
-        # This is the name of the person affected by the act
+        # Find the first ocurrence of an uppercase letter after the word, up to
+        # the next comma OR the next word that starts with a lowercase letter,
+        # ignoring connecting words like "da", "de", "do", "das", "dos", "e".
+        # This is the name of the person affected by the act!
         rest = act[act.lower().find(word) + len(word) :].strip()
 
-        name_start_index = re.search("[A-Z]", rest)
-        if name_start_index is None:
-            continue
+        pattern = r"[A-Z](?:(?!\b(?:da|de|do|das|dos|e)\b).)*?(?=,|\s[a-z])"
 
-        name_start_index = name_start_index.start()
-        name_end_index = rest.find(",", name_start_index)
-        name = rest[name_start_index:name_end_index]
+        name = re.search(pattern, rest)
+        if name:
+            name = name.group(0)
+            name = name.replace(",", "")
+            name = name.strip()
 
-        # Remove any - surrounded by any number of spaces in each side
-        # TODO: implement
-        # re.sub("[\s-\s]")
-
-        print("\nAffected name:\n" + name)
+        print("\nAffected name:\n", name)
 
         print("----\n")
 
