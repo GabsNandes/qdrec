@@ -48,7 +48,7 @@ def find_acts_in_text(word: str, full_text: str, page_number: int) -> list[Act]:
         # This is the name of the person affected by the act!
         rest = act[act.lower().find(word) + len(word) :].strip()
 
-        pattern = r"[A-Z\u00C0-\u00DC].*?(?=,|\s(?!da|de|do|das|dos|e)[a-z])"
+        pattern = r"[A-Z\u00C0-\u00DC].*?(?=,|\s(?!(da|de|do|das|dos|e)(\s[A-Z]))[a-z])"
 
         name = re.search(pattern, rest)
         if name:
@@ -70,8 +70,15 @@ def find_acts_in_text(word: str, full_text: str, page_number: int) -> list[Act]:
 def remove_header(last_word: str, full_text: str):
     # Remove text from the start of full_text up to the first occurence of last_word
 
-    start_index = full_text.lower().find(last_word.lower())
+    print(last_word.lower())
+    # print(full_text.lower())
+    print(full_text.lower().find(last_word.lower()))
+
+    start_index = full_text.lower().find(last_word.lower()) + len(last_word)
     full_text = full_text[start_index:]
+
+    print("Header removed:")
+    print(full_text[:100])
 
     return full_text
 
@@ -88,11 +95,15 @@ def find_acts_in_file(file_path: str, debug: bool = False) -> list[Act]:
         city_name = os.path.basename(file_path).split(" - ")[0]
         print(city_name)
 
+        pages_text = []
+
         for page_number, page in enumerate(pdf.pages):
             extracted_text = page.extract_text()
             print(f"Reading page {page_number+1}, length: {len(extracted_text)}")
 
             extracted_text = remove_header(city_name, extracted_text)
+
+            pages_text.append(extracted_text)
 
             nomination_acts = find_acts_in_text(
                 "nomear", extracted_text, page_number + 1
